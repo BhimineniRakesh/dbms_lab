@@ -1,54 +1,43 @@
 import mysql.connector
+db = mysql.connector.connect(user="root", passwd='pwd', db="UserDB")
+import json
+cursor = db.cursor()
+
 
 class Mysqlhandler:
-
-    def _init_(self):
+    def __init__(self):
         pass
-    def add_user(self):
-        cnx= mysql.connector.connect(user='root',password='pwd',database='userdb')
-        cursor = cnx.cursor()
-        query1 = ("insert into user_data values('hemanth',8059,'2001-05-6')")
-        query2 = ("insert into user_data values('sravann',9564,'2001-12-9')")
-        cursor.execute(query1)
-        cursor.execute(query2)
-        cursor = cnx.cursor()
-        cursor.execute("commit")
-        print("adding details to user_data table")
-        
-    def update_user(self):
-        cnx= mysql.connector.connect(user='root',password='Kamesh@123',database='userdb')
-        cursor = cnx.cursor()
-        query4 = ("update user_data set name='sravan',dob='2001-07-20' where phno=9564")
-        cursor.execute(query4)
-        cursor = cnx.cursor()
-        cursor.execute("commit")
-        print("updating details of user_data table")
-        
-    def delete_user(self):
-        cnx= mysql.connector.connect(user='root',password='Kamesh@123',database='userdb')
-        cursor = cnx.cursor()
-        query3 = (" delete from user_data where phno=9564 ")
-        cursor.execute(query3)
-        cursor = cnx.cursor()
-        cursor.execute("commit")
-        print("deleting details from user_data table")
-        
-    def display_user(self):
-        cnx= mysql.connector.connect(user='root',password='Kamesh@123',database='userdb')
-        cursor = cnx.cursor()
-        query = ("select * from user_data")
+    def add_user(self,value1,value2,value3):
+        query="INSERT INTO user_data values('{}',{},'{}')".format(value1,value2,value3)
+        cursor.execute(query)       
+        db.commit()
+        return {}
+    def update_user(self,name,dob,pno):
+        query=("update user_data set name='{}',dob='{}' where phno={}".format(name,dob,pno))
         cursor.execute(query)
-        print(list(cursor))
+        db.commit()
+        return {}
+        
+    def delete_user(self,phno):
+        query=("Delete from user_data  where phno='{}'".format(phno))
+        cursor.execute(query)
+        db.commit()
+        return {}
+       
+    def display_user(self,value):
+        query=("select name, phno,dob from user_data where name='{}'".format(value))
+        cursor.execute(query)
+        name,phno,dob=list(cursor)[0]
+        dob1=dob.strftime("%Y-%m-%d")
+        obj={
+            'name':name,
+            'phno':phno,
+            'dob':dob1
+        }
+        return(json.dumps(obj))
+
 
 
 if __name__=="__main__":
-    mysqlhandler=Mysqlhandler()
-    print("user_data table details")
-    mysqlhandler.display_user()
-    mysqlhandler.add_user()
-    mysqlhandler.display_user()
-    mysqlhandler.update_user()
-    mysqlhandler.display_user()
-    mysqlhandler.delete_user()
-    mysqlhandler.display_user()
-    
+    obj1=  Mysqlhandler()
+
